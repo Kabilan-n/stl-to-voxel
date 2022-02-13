@@ -26,7 +26,9 @@ def convert_meshes(meshes, resolution=100, parallel=True):
 
 
 def convert_file(input_file_path, output_file_path, resolution=100, pad=1, parallel=False):
-    convert_files([input_file_path], output_file_path, resolution=resolution, pad=pad, parallel=parallel)
+    out = convert_files([input_file_path], output_file_path, resolution=resolution, pad=pad, parallel=parallel)
+    
+    return out
 
 
 def convert_files(input_file_paths, output_file_path, colors=[(255, 255, 255)], resolution=100, pad=1, parallel=False):
@@ -46,7 +48,8 @@ def convert_files(input_file_paths, output_file_path, colors=[(255, 255, 255)], 
     elif output_file_extension == '.svx':
         export_svx(vol, output_file_path, scale, shift)
     elif output_file_extension == '.npy':
-        export_npy(vol, output_file_path, scale, shift)
+        out = export_npy(vol, output_file_path, scale, shift)
+    return out
 
 
 def export_pngs(voxels, output_file_path, colors):
@@ -100,7 +103,9 @@ def export_npy(voxels, output_file_path, scale, shift):
                 if voxels[z][y][x]:
                     point = (np.array([x, y, z]) / scale) + shift
                     out.append(point)
+    
     np.save(output_file_path, out)
+    return out
 
 
 def export_svx(voxels, output_file_path, scale, shift):
