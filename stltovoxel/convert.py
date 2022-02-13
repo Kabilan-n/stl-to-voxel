@@ -25,13 +25,13 @@ def convert_meshes(meshes, resolution=100, parallel=True):
     return vol, scale, shift
 
 
-def convert_file(input_file_path, output_file_path, resolution=100, pad=1, parallel=False):
-    out = convert_files([input_file_path], output_file_path, resolution=resolution, pad=pad, parallel=parallel)
+def convert_file(input_file_path, resolution=100, pad=1, parallel=False):
+    out = convert_files([input_file_path], resolution=resolution, pad=pad, parallel=parallel)
     
     return out
 
 
-def convert_files(input_file_paths, output_file_path, colors=[(255, 255, 255)], resolution=100, pad=1, parallel=False):
+def convert_files(input_file_paths, colors=[(255, 255, 255)], resolution=100, pad=1, parallel=False):
     meshes = []
     for input_file_path in input_file_paths:
         mesh_obj = mesh.Mesh.from_file(input_file_path)
@@ -39,17 +39,18 @@ def convert_files(input_file_paths, output_file_path, colors=[(255, 255, 255)], 
         meshes.append(org_mesh)
 
     vol, scale, shift = convert_meshes(meshes, resolution, parallel)
-    output_file_pattern, output_file_extension = os.path.splitext(output_file_path)
-    if output_file_extension == '.png':
-        vol = np.pad(vol, pad)
-        export_pngs(vol, output_file_path, colors)
-    elif output_file_extension == '.xyz':
-        export_xyz(vol, output_file_path, scale, shift)
-    elif output_file_extension == '.svx':
-        export_svx(vol, output_file_path, scale, shift)
-    elif output_file_extension == '.npy':
-        out = export_npy(vol, output_file_path, scale, shift)
-    return out
+#     output_file_pattern, output_file_extension = os.path.splitext(output_file_path)
+    out = export_npy(vol, scale, shift)
+#     if output_file_extension == '.png':
+#         vol = np.pad(vol, pad)
+#         export_pngs(vol, output_file_path, colors)
+#     elif output_file_extension == '.xyz':
+#         export_xyz(vol, output_file_path, scale, shift)
+#     elif output_file_extension == '.svx':
+#         export_svx(vol, output_file_path, scale, shift)
+#     elif output_file_extension == '.npy':
+#         out = export_npy(vol, scale, shift)
+#     return out
 
 
 def export_pngs(voxels, output_file_path, colors):
@@ -94,7 +95,7 @@ def export_xyz(voxels, output_file_path, scale, shift):
     output.close()
 
 
-def export_npy(voxels, output_file_path, scale, shift):
+def export_npy(voxels, scale, shift):
     voxels = voxels.astype(bool)
     out = []
     for z in range(voxels.shape[0]):
@@ -104,7 +105,6 @@ def export_npy(voxels, output_file_path, scale, shift):
                     point = (np.array([x, y, z]) / scale) + shift
                     out.append(point)
     
-    np.save(output_file_path, out)
     return out
 
 
