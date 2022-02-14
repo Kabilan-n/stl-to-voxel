@@ -50,7 +50,8 @@ def convert_files(input_file_paths, colors=[(255, 255, 255)], resolution=100, pa
 #         export_svx(vol, output_file_path, scale, shift)
 #     elif output_file_extension == '.npy':
 #         out = export_npy(vol, scale, shift)
-#     return out
+
+return out
 
 
 def export_pngs(voxels, output_file_path, colors):
